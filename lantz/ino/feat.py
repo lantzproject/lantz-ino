@@ -12,6 +12,7 @@
     :license: BSD, see LICENSE for more details.
 """
 
+import collections
 
 from lantz.core import mfeats
 
@@ -30,6 +31,10 @@ class BoolFeat(INOFeat, mfeats.BoolFeat):
         set_cmd = ('%s {}' % cmd) if setter else None
 
         mfeats.BoolFeat.__init__(self, get_cmd, set_cmd, '1', '0')
+
+    def get_initial_value(self):
+        # This is required because in Arduino a Bool is actually a string
+        return '0'
 
 
 class QuantityFeat(INOFeat, mfeats.QuantityFeat):
@@ -72,6 +77,12 @@ class BoolDictFeat(INODictFeat, mfeats.BoolDictFeat):
         set_cmd = ('%s {key} {value}' % cmd) if setter else None
 
         mfeats.BoolDictFeat.__init__(self, get_cmd, set_cmd, '1', '0', keys=keys)
+
+    def get_initial_value(self):
+        # This is required because in Arduino a Bool is actually a string
+        if self.keys:
+            return {k: '0' for k in self.keys}
+        return collections.defaultdict(lambda: '0')
 
 
 class QuantityDictFeat(INODictFeat, mfeats.QuantityDictFeat):
