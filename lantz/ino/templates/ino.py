@@ -23,7 +23,6 @@ void setup() {
   // PERSONALIZE: your setup code her
 
   Serial.begin(BAUD_RATE);
-  Serial.println("READY");
 }
 
 void loop() {

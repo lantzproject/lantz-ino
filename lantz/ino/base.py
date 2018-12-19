@@ -239,7 +239,6 @@ class INODriver(MessageBasedDriver):
 
     def initialize(self):
         super().initialize()
-        assert self.read() == 'READY'
 
     @Feat(read_once=True)
     def idn(self):
