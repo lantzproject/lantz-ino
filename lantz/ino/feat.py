@@ -65,6 +65,20 @@ class IntFeat(INOFeat, mfeats.IntFeat):
         mfeats.IntFeat.__init__(self, get_cmd, set_cmd, limits=limits)
 
 
+class FloatFeat(INOFeat, mfeats.FloatFeat):
+
+    INO_DATATYPE = 'F'
+
+    def __init__(self, cmd, number_format='d', limits=None, getter=True, setter=True):
+
+        INOFeat.__init__(self, cmd)
+
+        get_cmd = ('%s?' % cmd) if getter else None
+        set_cmd = ('%s {:%s}' % (cmd, number_format)) if setter else None
+
+        mfeats.FloatFeat.__init__(self, get_cmd, set_cmd, limits=limits)
+
+
 class BoolDictFeat(INODictFeat, mfeats.BoolDictFeat):
 
     INO_DATATYPE = 'B'
