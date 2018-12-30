@@ -52,7 +52,7 @@ def new(args=None):
 
     parser = argparse.ArgumentParser(description='Generate new Arduino-Lant bridge')
     parser.add_argument('class_spec')
-    parser.add_argument('base_folder')
+    parser.add_argument('base_folder', nargs='?', default='.')
     parser.add_argument('-f', '--force', help='Force overwriting user file.', action='store_true')
     args = parser.parse_args(args)
 
