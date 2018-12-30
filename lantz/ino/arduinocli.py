@@ -37,7 +37,7 @@ def find_boards(board, port, board_id):
     # 'port': '/dev/cu.usbmodem14111', 'usbID': '2341:0043 - 956323133343513072D1'}], 'networkBoards': []}
     found = []
 
-    for b in boards['serialBoards']:
+    for b in boards.get('serialBoards', []):
         if board and not b['fqbn'] == board:
             continue
         if port and not b['port'] == port:
