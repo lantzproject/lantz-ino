@@ -17,6 +17,7 @@ import hashlib
 import inspect
 import os
 import pickle
+import time
 
 from lantz.core import MessageBasedDriver, Feat, log
 
@@ -239,6 +240,9 @@ class INODriver(MessageBasedDriver):
 
     def initialize(self):
         super().initialize()
+        # Some Arduino reset the Serial upon establishing connection (after opening the port)
+        # This sleep is required to avoid sending messages when the board is not ready.
+        time.sleep(3)
 
     @Feat(read_once=True)
     def idn(self):
