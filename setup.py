@@ -16,7 +16,7 @@ long_description = '\n\n'.join([read('README'),
 __doc__ = long_description
 
 setup(name='lantz-ino',
-      version='0.5.dev1',
+      version='0.5.1',
       license='BSD',
       description='Instrumentation framework',
       long_description=long_description,
