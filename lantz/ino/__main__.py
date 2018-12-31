@@ -117,6 +117,11 @@ def update(args=None):
     args = parser.parse_args(args)
 
     try:
+        arduinocli.check_cli()
+    except arduinocli.ArduinoCliNotFound as e:
+        sys.exit(str(e))
+
+    try:
         arduinocli.compile_and_upload(args.packfile, not args.do_not_upload, args.force)
     except arduinocli.NoUpdateNeeded:
         print('No update needed. Use -f (--force) to do it anyway.')

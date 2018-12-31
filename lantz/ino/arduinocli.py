@@ -23,6 +23,22 @@ class NoUpdateNeeded(Exception):
     pass
 
 
+class ArduinoCliNotFound(Exception):
+
+    def __str__(self):
+        return ('The arduino-cli is required for this feature.\n'
+                'Please install it following the instructions here:\n'
+                '    https://github.com/arduino/arduino-cli\n')
+
+
+def check_cli():
+
+    try:
+        out = run_arduino_cli('version')
+    except FileNotFoundError:
+        raise ArduinoCliNotFound
+
+
 def run_arduino_cli(args):
 
     out = subprocess.run(['arduino-cli', '--format', 'json'] + args.split(' '), stdout=subprocess.PIPE)
