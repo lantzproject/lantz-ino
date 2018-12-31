@@ -5,7 +5,13 @@ Lantz-ino Changelog
 0.5 (unreleased)
 ----------------
 
-- New package for Arduino Lantz interaction
+- New package for Arduino Lantz interaction.
+- INODriver: A MessageBaseDriver derived class that specifies.
+  a way to exchange feats and dictfeats.
+- INO mfeats: MessageBased Feats for Ino drivers.
+- lantz-ino command line program.
+- Automatic creation of arduino sketch template.
+- Compilation and update of the sketch using arduino-cli.
 
 
 0.3 (2015-02-05)
