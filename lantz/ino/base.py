@@ -131,6 +131,28 @@ void wrapperSet_%s() {
 
 """
 
+ACTION_HEADER = """
+  // %s
+"""
+
+ACTION_CALL = """
+  // Call:
+  //   %s
+  // Returns: OK or ERROR  
+  %s("%s", wrapperCall_%s); 
+"""
+
+ACTION_WRAPPER = """
+void wrapperCall_%s() {
+  int err = call_%s();
+  if (err == 0) {
+    ok();
+  } else {
+    error_i(err);
+  }
+};
+
+"""
 
 def _write_feat_setup(fcpp, name, cmd, datatype, fget, fset, register='sCmd.addCommand'):
     fcpp.write(FEAT_HEADER % (name, datatype, DESCRIPTION[datatype]))
@@ -205,6 +227,25 @@ def _write_dictfeat_wrapped(fh, fcpp, cmd, datatype, key_datatype, fget, fset):
     if fset:
         fcpp.write('int set_%s(%s key, %s value) {\n  return 0;\n};\n\n' % (cmd, kt, t))
         fh.write('int set_%s(%s, %s); \n' % (cmd, kt, t))
+
+
+def _write_action_setup(fcpp, name, cmd, register='sCmd.addCommand'):
+
+    fcpp.write(ACTION_HEADER % name)
+
+    fcpp.write(ACTION_CALL % (cmd, register, cmd, cmd))
+
+
+def _write_action_wrapper(fh, fcpp, cmd):
+
+    fcpp.write(ACTION_WRAPPER % (cmd, cmd))
+    fh.write('void wrapperCall_%s(); \n' % cmd)
+
+
+def _write_action_wrapped(fh, fcpp, cmd):
+
+    fcpp.write('int call_%s() {\n  return 0;\n};\n\n' % cmd)
+    fh.write('int call_%s(); \n' % cmd)
 
 
 def hasher(obj):
