@@ -227,16 +227,26 @@ class INODriver(MessageBasedDriver):
         else:
             pf = common.Packfile.from_file(path_or_packfile)
 
-        if check_update:
-            try:
-                arduinocli.compile_and_upload(pf, upload=True)
-            except arduinocli.NoUpdateNeeded:
-                print('No update needed')
+        msgs = []
 
         if not pf.port:
             boards = arduinocli.find_boards_pack(pf)
             pf = arduinocli.just_one(pf, boards)
-        return cls.via_serial(pf.port, name=name, **kwargs)
+            msgs.append((log.DEBUG, 'Port autoselected %s' % pf.port))
+
+        if check_update:
+            try:
+                arduinocli.compile_and_upload(pf, upload=True)
+                msgs.append((log.INFO, 'Sketch compiled and uploaded.'))
+            except arduinocli.NoUpdateNeeded:
+                msgs.append((log.DEBUG, 'Current sketch in the arduino is up to date.'))
+
+        inst = cls.via_serial(pf.port, name=name, **kwargs)
+
+        for level, msg in msgs:
+            inst.log(level, msg)
+
+        return inst
 
     def initialize(self):
         super().initialize()
