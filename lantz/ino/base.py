@@ -294,6 +294,11 @@ class INODriver(MessageBasedDriver):
         # Some Arduino reset the Serial upon establishing connection (after opening the port)
         # This sleep is required to avoid sending messages when the board is not ready.
         time.sleep(3)
+        self.set_query('INITIALIZE')
+
+    def finalize(self):
+        self.set_query('FINALIZE')
+        super().finalize()
 
     @Feat(read_once=True)
     def idn(self):
@@ -341,6 +346,9 @@ class INODriver(MessageBasedDriver):
 
             fcpp.write(bridge.IN_SETUP)
 
+            _write_action_setup(fcpp, 'initialize', 'INITIALIZE')
+            _write_action_setup(fcpp, 'finalize', 'FINALIZE')
+
             cm = ChainMap(cls._lantz_feats, cls._lantz_dictfeats)
 
             for feat_name, feat in cm.items():
@@ -351,6 +359,11 @@ class INODriver(MessageBasedDriver):
 
             fh.write(bridge.IN_H_BODY)
             fcpp.write(bridge.IN_CPP_BODY % cls.__qualname__)
+
+            fcpp.write('// COMMAND: %s, Action: %s\n' % ('INITIALIZE', 'initialize'))
+            _write_action_wrapper(fh, fcpp, 'INITIALIZE')
+            fcpp.write('// COMMAND: %s, Action: %s\n' % ('FINALIZE', 'finalize'))
+            _write_action_wrapper(fh, fcpp, 'FINALIZE')
 
             for feat_name, feat in cm.items():
                 if isinstance(feat, INOFeat):
@@ -388,6 +401,10 @@ class INODriver(MessageBasedDriver):
 
             fh.write(user.H)
             fcpp.write(user.CPP)
+
+            _write_action_wrapped(fh, fcpp, 'INITIALIZE')
+            _write_action_wrapped(fh, fcpp, 'FINALIZE')
+
             cm = ChainMap(cls._lantz_feats, cls._lantz_dictfeats)
 
             for feat_name, feat in cm.items():
